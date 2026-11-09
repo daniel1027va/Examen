@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<!--
+  <!DOCTYPE html>: le dice al navegador que este documento es HTML5.
+  Va siempre en la primera línea.
+-->
+
+<html lang="es">
+<!--
+  <html>: etiqueta raíz, todo el documento va dentro.
+  lang="es": idioma de la página (accesibilidad, buscadores, traductores).
+-->
+
+<head>
+  <!-- <head>: configuración de la página. Nada de lo que hay aquí se ve en pantalla. -->
+
+  <meta charset="UTF-8">
+  <!-- charset="UTF-8": permite ver bien tildes, ñ, ¿ ¡ y emojis. -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    viewport: imprescindible para que la página sea responsive en móvil.
+    width=device-width: el ancho de la página = ancho real de la pantalla.
+    initial-scale=1.0: sin zoom al cargar.
+  -->
+
+  <title>Prototipo Tailwind | HTML sin CSS propio</title>
+  <!-- <title>: texto que aparece en la pestaña del navegador. -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!--
+    Tailwind por CDN (modo "Play CDN"). Es lo más rápido para pruebas y exámenes:
+    una sola línea y ya puedes usar todas las clases.
+    Funciona leyendo las clases que escribes en el HTML y generando el CSS
+    en el momento, dentro del navegador.
+    OJO: para proyectos reales se instala con npm y se compila (el CDN no se
+    recomienda en producción), pero para practicar y para un examen es perfecto.
+    En esta página NO hay etiqueta <style> ni atributos style="...".
+  -->
+</head>
+
+<!--
+  ============================================================
+  CHULETA RÁPIDA DE CLASES TAILWIND USADAS EN ESTA PÁGINA
+  ============================================================
+  Idea clave: en Tailwind cada clase hace UNA sola cosa (utility first).
+  Combinas muchas clases para construir el diseño directamente en el HTML.
+
+  ESPACIADO (unidad: 1 = 0.25rem = 4px, así que 4 = 1rem = 16px)
+    p-4 = padding en los 4 lados      px-4 = izquierda y derecha     py-4 = arriba y abajo
+    pt-4 / pb-4 / pl-4 / pr-4 = arriba / abajo / izquierda / derecha
+    m-4, mx-auto, my-4, mt-4, mb-4 ... igual pero con margin (espacio EXTERIOR)
+    gap-4 = espacio entre hijos de un flex o grid
+    space-y-4 = espacio vertical entre hijos directos
+
+  TAMAÑOS
+    w-full = ancho 100%     max-w-6xl = ancho máximo     h-full = alto 100%
+    min-h-screen = alto mínimo de toda la pantalla
+
+  FLEXBOX
+    flex ................ activa flexbox (fila por defecto)
+    flex-col ............ apila en vertical
+    justify-between ..... reparte en horizontal (start, center, end, between)
+    items-center ........ centra en vertical (start, center, end)
+    flex-wrap ........... permite que pasen a la siguiente línea
+
+  GRID
+    grid ................ activa grid
+    grid-cols-3 ......... 3 columnas iguales (del 1 al 12)
+
+  TEXTO
+    text-center / text-left / text-right
+    text-sm, text-base, text-lg, text-xl, text-2xl ... text-6xl  (tamaños)
+    font-bold / font-semibold / font-medium
+    text-white / text-slate-600 / text-blue-600 ... (colores: color-tono)
+
+  FONDOS, BORDES, SOMBRAS
+    bg-white / bg-slate-900 / bg-blue-600 ... fondo
+    border, border-slate-200 ... borde y su color
+    rounded-lg / rounded-xl / rounded-full ... esquinas
+    shadow-sm / shadow-md / shadow-lg ... sombras
+
+  RESPONSIVE (mobile first: lo SIN prefijo vale para móvil)
+    sm: desde 640px   md: desde 768px   lg: desde 1024px   xl: desde 1280px
+    Ejemplo: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+             (1 columna en móvil, 2 desde tablet, 3 desde escritorio)
+
+  ESTADOS (se escriben como prefijo con dos puntos)
+    hover:  al pasar el mouse        focus:  al enfocar (clic o Tab)
+    even:   filas pares              open:   cuando un details está abierto
+    group-open: / group-hover: ...   según el estado de un padre con class="group"
+-->
+
+<body class="bg-slate-50 text-slate-700 antialiased">
+  <!--
+    <body>: todo lo que se VE en la página va aquí.
+    bg-slate-50 ...... fondo gris muy claro.
+    text-slate-700 ... color de texto por defecto (los hijos lo heredan).
+    antialiased ...... suaviza el renderizado de las letras.
+  -->
+
+  <!-- ============================================================
+       NAVBAR (barra de navegación)
+       ============================================================ -->
+  <header class="sticky top-0 z-50 bg-slate-900">
+    <!--
+      <header>: etiqueta semántica de "encabezado".
+      sticky ... el elemento se comporta normal hasta el scroll y luego se pega.
+      top-0 .... se pega a 0 de distancia del borde superior.
+      z-50 ..... orden de apilamiento alto: queda por ENCIMA del resto al hacer scroll.
+      bg-slate-900 ... fondo azul grisáceo muy oscuro.
+    -->
+
+    <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4" aria-label="Navegación principal">
+      <!--
+        <nav>: etiqueta semántica para navegación. aria-label: descripción
+        para lectores de pantalla.
+        mx-auto ........ margin izquierda/derecha auto: centra el bloque.
+        max-w-6xl ...... ancho máximo (72rem = 1152px): equivale al "container".
+        flex ........... activa flexbox: logo y menú quedan en fila.
+        items-center ... centra los hijos en vertical.
+        justify-between . logo a la izquierda, menú a la derecha.
+        px-6 py-4 ...... padding horizontal 1.5rem y vertical 1rem.
+      -->
+
+      <a href="#inicio" class="text-xl font-bold text-white">MiProyecto</a>
+      <!--
+        <a>: enlace. href="#inicio" salta al elemento con id="inicio".
+        text-xl ... letra grande.  font-bold ... negrita.  text-white ... blanco.
+      -->
+
+      <button id="botonMenu" type="button"
+              class="rounded-lg p-2 text-white hover:bg-slate-700 md:hidden"
+              aria-label="Mostrar u ocultar el menú" aria-expanded="false">
+        <!--
+          Botón hamburguesa: solo visible en móvil.
+          id="botonMenu" ... lo usaremos en el JavaScript del final.
+          rounded-lg ....... esquinas redondeadas.
+          p-2 .............. padding de 0.5rem.
+          hover:bg-slate-700 . al pasar el mouse, el fondo se aclara.
+          md:hidden ........ desde 768px (md) el botón DESAPARECE (hidden = display none).
+                             Sin prefijo se ve; con md: se oculta en pantallas medianas y grandes.
+        -->
+        ☰
+        <!-- ☰ es un carácter de texto que dibuja las tres rayitas. -->
+      </button>
+
+      <ul id="menu" class="hidden w-full flex-col gap-2 pt-4 text-slate-300 md:flex md:w-auto md:flex-row md:gap-8 md:pt-0">
+        <!--
+          <ul>: lista sin orden. Un menú es semánticamente una lista de enlaces.
+          id="menu" .......... lo usa el JavaScript para mostrarlo u ocultarlo.
+          hidden ............. en móvil empieza oculto (display: none).
+          md:flex ............ desde 768px se muestra como flexbox (aparece solo).
+          md:flex-row ........ desde md, los enlaces van en FILA.
+          flex-col ........... (cuando se muestra en móvil) apilados en columna.
+          w-full ............. en móvil ocupa todo el ancho; md:w-auto lo ajusta al contenido.
+          gap-2 / md:gap-8 ... espacio entre enlaces: pequeño en móvil, grande en escritorio.
+          pt-4 / md:pt-0 ..... padding arriba en móvil, ninguno en escritorio.
+          text-slate-300 ..... gris claro, legible sobre fondo oscuro.
+        -->
+        <li><a href="#servicios" class="transition hover:text-white">Servicios</a></li>
+        <!--
+          <li>: ítem de la lista.
+          transition ....... anima los cambios de estilo (suavemente).
+          hover:text-white . al pasar el mouse, el texto pasa a blanco.
+        -->
+        <li><a href="#precios" class="transition hover:text-white">Precios</a></li>
+        <li><a href="#preguntas" class="transition hover:text-white">Preguntas</a></li>
+        <li><a href="#contacto" class="transition hover:text-white">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- <main>: contenido PRINCIPAL de la página. Solo uno por página. -->
+
+    <!-- ============================================================
+         HERO (bienvenida)
+         ============================================================ -->
+    <section id="inicio" class="px-6 py-20 text-center">
+      <!--
+        <section>: sección temática del documento.
+        id="inicio": identificador ÚNICO (para el enlace ancla #inicio).
+        px-6 ... padding lateral (evita que el texto toque los bordes en móvil).
+        py-20 .. padding vertical grande (5rem).
+        text-center ... centra el texto.
+      -->
+      <div class="mx-auto max-w-3xl">
+        <!-- <div>: caja genérica sin significado. max-w-3xl limita el ancho a 48rem. -->
+
+        <h1 class="mb-4 text-4xl font-bold leading-tight text-slate-900 md:text-6xl">
+          Páginas web que se ven bien en cualquier pantalla
+        </h1>
+        <!--
+          <h1>: título principal. Solo uno por página.
+          mb-4 ............. margin-bottom: espacio debajo.
+          text-4xl ......... letra grande en móvil.
+          md:text-6xl ...... desde 768px, aún más grande (ejemplo de responsive).
+          font-bold ........ negrita.
+          leading-tight .... interlineado cerrado (leading = line-height).
+          text-slate-900 ... casi negro, para destacar el título.
+        -->
+
+        <p class="mx-auto mb-8 max-w-xl text-lg text-slate-600">
+          Este prototipo usa únicamente Tailwind: navbar, tarjetas, tabla,
+          formulario, acordeón y modal, sin una sola línea de CSS propio.
+        </p>
+        <!--
+          <p>: párrafo.
+          max-w-xl ... limita el ancho de línea (más cómodo de leer).
+          mx-auto .... centra ese bloque limitado.
+          text-lg .... letra un poco más grande.
+        -->
+
+        <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <!--
+            Contenedor de los botones.
+            flex flex-col ... en móvil, botones apilados uno debajo del otro.
+            sm:flex-row ..... desde 640px, uno al lado del otro.
+            items-center justify-center ... centrados en ambos ejes.
+            gap-3 ........... separación entre botones.
+          -->
+
+          <a href="#contacto"
+             class="rounded-lg bg-blue-600 px-7 py-3 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">
+            Escríbenos
+          </a>
+          <!--
+            Enlace con aspecto de botón.
+            rounded-lg ......... esquinas redondeadas.
+            bg-blue-600 ........ fondo azul.
+            px-7 py-3 .......... padding interior (más ancho que alto).
+            font-semibold ...... grosor seminegrita.
+            text-white ......... texto blanco.
+            transition ......... anima los cambios (hover, etc.).
+            hover:-translate-y-0.5 ... al pasar el mouse, SUBE 2px (el signo - invierte
+                                       el valor; 0.5 equivale a 0.125rem).
+            hover:bg-blue-700 .. al pasar el mouse, azul más oscuro.
+            focus:outline-none . quita el contorno por defecto...
+            focus-visible:ring-4 focus-visible:ring-blue-300 ... ...y pone un aro azul claro
+                               cuando se navega con teclado (accesibilidad).
+            Regla: si LLEVA a otra parte usa <a>; si EJECUTA una acción usa <button>.
+          -->
+
+          <button type="button" onclick="document.getElementById('modalInfo').showModal()"
+                  class="rounded-lg border border-slate-300 bg-white px-7 py-3 font-semibold text-slate-700 transition hover:bg-slate-100">
+            Ver más info
+          </button>
+          <!--
+            Botón "secundario": fondo blanco y borde.
+            border ........... borde de 1px.   border-slate-300 ... color del borde.
+            onclick="..." .... al hacer clic, ejecuta JavaScript: busca el elemento con
+                               id="modalInfo" y lo abre con showModal() (método del
+                               elemento <dialog>, ver más abajo).
+          -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TARJETAS (grid responsive)
+         ============================================================ -->
+    <section id="servicios" class="bg-white px-6 py-16">
+      <div class="mx-auto max-w-6xl">
+        <h2 class="mb-12 text-center text-3xl font-bold text-slate-900">Nuestros servicios</h2>
+        <!-- <h2>: título de sección. mb-12 deja bastante espacio debajo. -->
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <!--
+            grid ............. activa CSS Grid.
+            grid-cols-1 ...... 1 columna en móvil.
+            md:grid-cols-2 ... 2 columnas desde 768px.
+            lg:grid-cols-3 ... 3 columnas desde 1024px.
+            gap-6 ............ separación entre tarjetas (1.5rem).
+          -->
+
+          <article class="rounded-xl border border-slate-200 bg-white p-7 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <!--
+              <article>: contenido independiente (una tarjeta).
+              rounded-xl ...... esquinas bien redondeadas.
+              border border-slate-200 ... borde fino gris claro.
+              p-7 ............. padding interior.
+              shadow-sm ....... sombra suave; hover:shadow-lg la hace más grande al pasar el mouse.
+              hover:-translate-y-1 ... sube 4px al pasar el mouse.
+              transition ...... anima esos cambios.
+            -->
+            <div class="mb-3 text-4xl" aria-hidden="true">🎨</div>
+            <!--
+              text-4xl: agranda el emoji (se trata como texto).
+              aria-hidden="true": los lectores de pantalla lo ignoran (es decorativo).
+            -->
+            <h3 class="mb-2 text-lg font-semibold text-slate-900">Diseño web</h3>
+            <!-- <h3>: subtítulo. Mantiene la jerarquía h1 > h2 > h3. -->
+            <p class="text-slate-600">Interfaces limpias y adaptadas a móvil, tablet y escritorio.</p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-7 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <div class="mb-3 text-4xl" aria-hidden="true">⚙️</div>
+            <h3 class="mb-2 text-lg font-semibold text-slate-900">Desarrollo</h3>
+            <p class="text-slate-600">Código ordenado y semántico, fácil de mantener con el tiempo.</p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-7 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <div class="mb-3 text-4xl" aria-hidden="true">🚀</div>
+            <h3 class="mb-2 text-lg font-semibold text-slate-900">Optimización</h3>
+            <p class="text-slate-600">Páginas rápidas y bien posicionadas en los buscadores.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TABLA
+         ============================================================ -->
+    <section id="precios" class="px-6 py-16">
+      <div class="mx-auto max-w-6xl">
+        <h2 class="mb-12 text-center text-3xl font-bold text-slate-900">Planes y precios</h2>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+          <!--
+            overflow-x-auto ... si la tabla es más ancha que la pantalla, aparece
+                                scroll horizontal SOLO aquí (no rompe la página en móvil).
+            rounded-xl + border + bg-white ... aspecto de tarjeta alrededor de la tabla.
+          -->
+          <table class="w-full text-left">
+            <!--
+              <table>: tabla de datos (no se usa para maquetar).
+              w-full ... ancho 100%.   text-left ... texto alineado a la izquierda.
+              Tailwind NO trae estilos de tabla: hay que ponerlos tú mismo.
+            -->
+
+            <caption class="sr-only">Comparación de planes</caption>
+            <!--
+              <caption>: título de la tabla (accesibilidad).
+              sr-only: "solo lectores de pantalla". Lo oculta a la vista pero se sigue leyendo.
+            -->
+
+            <thead class="bg-slate-900 text-white">
+              <!-- <thead>: grupo de filas del ENCABEZADO. -->
+              <tr>
+                <!-- <tr>: fila (table row). -->
+                <th scope="col" class="px-5 py-3 font-semibold">Plan</th>
+                <!--
+                  <th>: celda de encabezado. scope="col": describe una columna.
+                  px-5 py-3: padding interior de cada celda.
+                -->
+                <th scope="col" class="px-5 py-3 font-semibold">Páginas</th>
+                <th scope="col" class="px-5 py-3 font-semibold">Soporte</th>
+                <th scope="col" class="px-5 py-3 text-right font-semibold">Precio</th>
+                <!-- text-right: alinea a la derecha (bueno para cifras). -->
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-slate-200">
+              <!--
+                <tbody>: cuerpo de la tabla.
+                divide-y ............ pone una línea entre cada fila hija (divisor vertical).
+                divide-slate-200 .... color de esas líneas.
+              -->
+              <tr class="transition even:bg-slate-50 hover:bg-blue-50">
+                <!--
+                  even:bg-slate-50 ... filas pares con fondo gris (efecto cebra).
+                  hover:bg-blue-50 ... resalta la fila al pasar el mouse.
+                -->
+                <td class="px-5 py-3">Básico</td>
+                <!-- <td>: celda de datos normal (table data). -->
+                <td class="px-5 py-3">1</td>
+                <td class="px-5 py-3">Correo</td>
+                <td class="px-5 py-3 text-right">$50</td>
+              </tr>
+              <tr class="transition even:bg-slate-50 hover:bg-blue-50">
+                <td class="px-5 py-3">
+                  Profesional
+                  <span class="ml-2 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white">Popular</span>
+                  <!--
+                    <span>: contenedor en línea sin significado propio.
+                    ml-2 ............ margen a la izquierda.
+                    rounded-full .... esquinas totalmente redondas (forma de píldora).
+                    px-2.5 py-0.5 ... padding pequeño (los decimales como 2.5 existen).
+                    text-xs ......... letra muy pequeña.
+                  -->
+                </td>
+                <td class="px-5 py-3">5</td>
+                <td class="px-5 py-3">Chat</td>
+                <td class="px-5 py-3 text-right">$120</td>
+              </tr>
+              <tr class="transition even:bg-slate-50 hover:bg-blue-50">
+                <td class="px-5 py-3">Empresa</td>
+                <td class="px-5 py-3">Ilimitadas</td>
+                <td class="px-5 py-3">Teléfono 24/7</td>
+                <td class="px-5 py-3 text-right">$300</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACORDEÓN (preguntas frecuentes) con la etiqueta nativa details
+         Sin JavaScript: HTML ya trae este comportamiento.
+         ============================================================ -->
+    <section id="preguntas" class="bg-white px-6 py-16">
+      <div class="mx-auto max-w-2xl">
+        <h2 class="mb-12 text-center text-3xl font-bold text-slate-900">Preguntas frecuentes</h2>
+
+        <div class="space-y-3">
+          <!-- space-y-3: separa verticalmente cada hijo directo (0.75rem). -->
+
+          <details class="group rounded-lg border border-slate-200 p-4" open>
+            <!--
+              <details>: bloque desplegable NATIVO de HTML (no necesita JavaScript).
+              open ........ atributo que lo deja abierto al cargar.
+              group ....... marca este elemento como "grupo": sus hijos pueden
+                            reaccionar a su estado con group-open:, group-hover:, etc.
+            -->
+            <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-slate-900">
+              <!--
+                <summary>: la parte que siempre se ve y que se pulsa para abrir/cerrar.
+                flex items-center justify-between ... texto a la izquierda, flecha a la derecha.
+                cursor-pointer ... el cursor se vuelve manita.
+                list-none ........ quita el triángulo por defecto del navegador.
+              -->
+              ¿Cuánto tarda un proyecto?
+              <span class="transition group-open:rotate-180" aria-hidden="true">▾</span>
+              <!--
+                group-open:rotate-180 ... cuando el details padre (group) está abierto,
+                                          la flecha gira 180 grados.
+              -->
+            </summary>
+            <p class="mt-3 text-slate-600">Depende del plan, pero un sitio básico se entrega en una semana.</p>
+            <!-- mt-3: margen arriba para separar la respuesta del título. -->
+          </details>
+
+          <details class="group rounded-lg border border-slate-200 p-4">
+            <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-slate-900">
+              ¿Puedo cambiar de plan después?
+              <span class="transition group-open:rotate-180" aria-hidden="true">▾</span>
+            </summary>
+            <p class="mt-3 text-slate-600">Sí, puedes subir o bajar de plan cuando quieras.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FORMULARIO
+         ============================================================ -->
+    <section id="contacto" class="px-6 py-16">
+      <div class="mx-auto max-w-xl">
+        <h2 class="mb-12 text-center text-3xl font-bold text-slate-900">Contáctanos</h2>
+
+        <form action="#" method="post" class="space-y-5 rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+          <!--
+            <form>: agrupa los campos que se envían juntos.
+            action="#": a dónde se envían los datos (ninguna, es de prueba).
+            method="post": los datos viajan ocultos ("get" los pondría en la URL).
+            space-y-5 ... espacio vertical entre cada campo (1.25rem).
+            p-8 ......... padding interior grande.
+          -->
+
+          <div>
+            <label for="nombre" class="mb-1 block font-semibold text-slate-900">Nombre</label>
+            <!--
+              <label>: etiqueta del campo.
+              for="nombre": la vincula al input con id="nombre" (clic en el texto
+              selecciona el campo).
+              block ... display block: la etiqueta ocupa su propia línea.
+              mb-1 .... pequeño espacio debajo.
+            -->
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required
+                   class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40">
+            <!--
+              <input>: campo de entrada (sin etiqueta de cierre).
+              type="text": texto. Otros: email, password, number, date, tel, url, file...
+              id: identificador único.   name: nombre con el que viajan los datos.
+              placeholder: texto gris de ejemplo.   required: no deja enviar si está vacío.
+              w-full ................ ancho 100% del contenedor.
+              border border-slate-300 . borde gris.
+              focus:border-blue-500 ... al enfocar, el borde se vuelve azul.
+              focus:outline-none ...... quita el contorno por defecto...
+              focus:ring-2 ............ ...y lo sustituye por un aro de 2px.
+              focus:ring-blue-500/40 .. color del aro: azul con 40% de opacidad
+                                        (la barra / controla la transparencia).
+            -->
+          </div>
+
+          <div>
+            <label for="correo" class="mb-1 block font-semibold text-slate-900">Correo electrónico</label>
+            <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required
+                   class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40">
+            <!-- type="email": el navegador valida que tenga formato de correo. -->
+            <p class="mt-1 text-sm text-slate-500">Nunca compartiremos tu correo.</p>
+            <!-- text-sm: letra pequeña, para textos de ayuda. -->
+          </div>
+
+          <div>
+            <label for="asunto" class="mb-1 block font-semibold text-slate-900">Asunto</label>
+            <select id="asunto" name="asunto"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40">
+              <!-- <select>: lista desplegable. Cada opción va en un <option>. -->
+              <option value="info" selected>Quiero información</option>
+              <!-- value: lo que se envía.   selected: opción marcada por defecto. -->
+              <option value="presupuesto">Pedir presupuesto</option>
+              <option value="soporte">Soporte técnico</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="mensaje" class="mb-1 block font-semibold text-slate-900">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos qué necesitas"
+                      class="w-full resize-y rounded-lg border border-slate-300 px-4 py-2.5 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40"></textarea>
+            <!--
+              <textarea>: texto de varias líneas (sí lleva etiqueta de cierre).
+              rows="4": altura inicial en líneas.
+              resize-y: el usuario solo puede cambiar la altura, no el ancho.
+            -->
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- flex items-center: casilla y texto en la misma línea, alineados. -->
+            <input type="checkbox" id="acepto" name="acepto" required class="h-4 w-4 accent-blue-600">
+            <!--
+              type="checkbox": casilla de verificación.
+              h-4 w-4 ............ tamaño de 1rem x 1rem.
+              accent-blue-600 .... color azul de la casilla marcada.
+            -->
+            <label for="acepto" class="text-sm">Acepto la política de privacidad</label>
+          </div>
+
+          <button type="submit"
+                  class="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">
+            Enviar mensaje
+          </button>
+          <!--
+            <button type="submit">: al hacer clic, envía el formulario.
+            Otros tipos: type="button" (no hace nada solo) y type="reset" (vacía el formulario).
+            w-full: ocupa todo el ancho.
+          -->
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="bg-slate-900 px-6 py-8 text-center text-sm text-slate-400">
+    <!-- <footer>: pie de página (derechos, enlaces legales, contacto). -->
+    <p>&copy; 2026 MiProyecto. Todos los derechos reservados.</p>
+    <!--
+      &copy; es una ENTIDAD HTML que muestra el símbolo ©.
+      Otras: &lt; (<)  &gt; (>)  &amp; (&)  &nbsp; (espacio fijo).
+    -->
+  </footer>
+
+  <!-- ============================================================
+       MODAL con la etiqueta nativa dialog
+       Se abre con showModal() y se cierra con un formulario method="dialog".
+       ============================================================ -->
+  <dialog id="modalInfo" class="w-full max-w-md rounded-xl p-0 shadow-2xl backdrop:bg-black/50">
+    <!--
+      <dialog>: ventana emergente NATIVA de HTML. Oculta hasta que se abre.
+      id="modalInfo" ... el botón "Ver más info" apunta a este id.
+      w-full max-w-md ... ancho completo en móvil pero máximo 28rem.
+      rounded-xl ........ esquinas redondeadas.
+      p-0 ............... quita el padding por defecto del navegador (lo ponemos dentro).
+      shadow-2xl ........ sombra muy grande.
+      backdrop:bg-black/50 ... estiliza el "telón" detrás del modal: negro al 50%.
+                               backdrop: es un prefijo especial para ese telón.
+    -->
+    <div class="p-6">
+      <h2 class="mb-2 text-xl font-bold text-slate-900">Más información</h2>
+      <p class="mb-6 text-slate-600">
+        Esto es un modal hecho con la etiqueta nativa dialog: una ventana emergente
+        que se abre con una línea de JavaScript y se cierra sin escribir nada más.
+      </p>
+
+      <form method="dialog" class="flex justify-end gap-3">
+        <!--
+          method="dialog": un formulario especial que, al enviarse, CIERRA el
+          dialog que lo contiene (sin recargar la página).
+          flex justify-end ... botones alineados a la derecha.
+        -->
+        <button class="rounded-lg border border-slate-300 px-5 py-2 font-semibold transition hover:bg-slate-100">Cerrar</button>
+        <!-- Dentro de un form method="dialog", cualquier botón cierra el modal. -->
+        <button class="rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white transition hover:bg-blue-700">Entendido</button>
+      </form>
+    </div>
+  </dialog>
+
+  <script>
+    /*
+      ÚNICO bloque de JavaScript de la página.
+      Tailwind es solo CSS: NO trae componentes interactivos como Bootstrap.
+      Para el menú hamburguesa necesitamos unas pocas líneas de JS.
+    */
+
+    const boton = document.getElementById('botonMenu');
+    /*
+      const: declara una variable que no se reasigna.
+      document.getElementById('botonMenu'): busca en la página el elemento
+      con id="botonMenu" (el botón hamburguesa) y lo guarda en "boton".
+    */
+
+    const menu = document.getElementById('menu');
+    /* Igual, pero guarda la lista de enlaces (id="menu"). */
+
+    boton.addEventListener('click', () => {
+      /*
+        addEventListener('click', ...): "cuando hagan clic en el botón,
+        ejecuta esta función". La flecha () => { } es una función corta.
+      */
+
+      menu.classList.toggle('hidden');
+      /*
+        classList.toggle('hidden'): si el menú tiene la clase "hidden", se la
+        quita (el menú aparece); si no la tiene, se la pone (el menú se oculta).
+        Es el mismo mecanismo que usa Tailwind: mostrar/ocultar con clases.
+      */
+
+      const abierto = !menu.classList.contains('hidden');
+      /*
+        contains('hidden'): ¿tiene la clase hidden? (true o false).
+        El signo ! invierte el resultado: "abierto" es true si NO tiene hidden.
+      */
+
+      boton.setAttribute('aria-expanded', abierto);
+      /*
+        Actualiza el atributo de accesibilidad aria-expanded para que los
+        lectores de pantalla sepan si el menú está abierto o cerrado.
+      */
+    });
+  </script>
+</body>
+</html>
+<!-- Cierre de </html>: fin del documento. -->

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<!--
+  <!DOCTYPE html>
+  Le dice al navegador: "este documento es HTML5".
+  Siempre va en la primera línea. Sin esto, el navegador entra en
+  "modo quirks" y puede mostrar la página de forma rara.
+-->
+
+<html lang="es">
+<!--
+  <html>: etiqueta raíz. Todo el documento va dentro de ella.
+  lang="es": idioma de la página. Sirve para accesibilidad (lectores de
+  pantalla), buscadores y traductores automáticos.
+-->
+
+<head>
+  <!--
+    <head>: zona de "configuración" de la página. Lo que pongas aquí
+    NO se ve en pantalla, pero define cómo se comporta la página.
+  -->
+
+  <meta charset="UTF-8">
+  <!--
+    charset="UTF-8": codificación de caracteres. Permite que se vean bien
+    tildes, ñ, ¿ ¡ y emojis. Si lo olvidas, verás símbolos raros (Ã±).
+  -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    viewport: imprescindible para que la página sea responsive en móvil.
+    width=device-width: el ancho de la página = ancho real de la pantalla.
+    initial-scale=1.0: sin zoom al cargar.
+    Sin esta línea, en el celular la página se ve diminuta, como de escritorio.
+  -->
+
+  <meta name="description" content="Página prototipo para practicar HTML y CSS">
+  <!--
+    description: resumen de la página. Los buscadores (Google) lo muestran
+    debajo del título en los resultados.
+  -->
+
+  <title>Prototipo comentado | HTML y CSS</title>
+  <!--
+    <title>: texto que aparece en la pestaña del navegador.
+    También es lo que muestran los buscadores como título del resultado.
+  -->
+
+  <!--
+    ============================================================
+    LIBRERÍAS EXTERNAS (OPCIONALES, vienen comentadas)
+    ============================================================
+    Si el examen permite Bootstrap o Tailwind, se agregan aquí con un CDN
+    (una URL que sirve el archivo desde internet, sin descargar nada).
+
+    BOOTSTRAP (CSS) - va dentro del head:
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    BOOTSTRAP (JS) - va justo antes de cerrar </body> (para modales, menú móvil, etc.):
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    TAILWIND (CDN, ideal para pruebas y exámenes) - va dentro del head:
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    Esta página usa CSS puro para que veas cómo funciona "por debajo".
+    En cada sección te dejo el equivalente en Bootstrap y Tailwind.
+  -->
+
+  <style>
+    /*
+      <style>: aquí escribimos CSS dentro del mismo archivo HTML.
+      En un proyecto real se separa en un archivo styles.css y se enlaza con:
+      <link rel="stylesheet" href="styles.css">
+    */
+
+    /* ==========================================================
+       1. VARIABLES CSS (custom properties)
+       ========================================================== */
+
+    :root {
+      /*
+        :root = el elemento <html>. Las variables definidas aquí se pueden
+        usar en TODA la página con var(--nombre).
+        Ventaja: cambias un color en un solo lugar y se actualiza en todos lados.
+      */
+
+      --color-principal: #2563eb;   /* azul: botones, enlaces, acentos */
+      --color-oscuro: #0f172a;      /* azul muy oscuro: navbar, footer, textos fuertes */
+      --color-texto: #334155;       /* gris azulado: texto normal de los párrafos */
+      --color-fondo: #f8fafc;       /* gris casi blanco: fondo de la página */
+      --color-tarjeta: #ffffff;     /* blanco: fondo de las tarjetas */
+      --color-borde: #e2e8f0;       /* gris claro: bordes suaves */
+      --radio: 12px;                /* esquinas redondeadas que reutilizamos */
+      --ancho-max: 1100px;          /* ancho máximo del contenido en pantallas grandes */
+    }
+
+    /* ==========================================================
+       2. RESET Y ESTILOS BASE
+       ========================================================== */
+
+    * {
+      /*
+        * = selector universal: aplica a TODOS los elementos.
+        Lo usamos para quitar márgenes y paddings por defecto del navegador
+        y tener un punto de partida limpio.
+      */
+      margin: 0;               /* quita el espacio EXTERIOR por defecto */
+      padding: 0;              /* quita el espacio INTERIOR por defecto */
+      box-sizing: border-box;  /*
+        Cambia cómo se calcula el tamaño de las cajas.
+        Con border-box, el width INCLUYE padding y borde.
+        Sin esto, un div de 200px con padding de 20px mediría 240px (confuso).
+      */
+    }
+
+    html {
+      scroll-behavior: smooth;  /* al hacer clic en un enlace #ancla, la página se desliza suave */
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      /*
+        font-family: lista de fuentes por orden de prioridad.
+        Si la primera no existe en el dispositivo, usa la siguiente.
+        "sans-serif" al final es el plan de respaldo genérico.
+      */
+      color: var(--color-texto);            /* color del texto (usa la variable) */
+      background-color: var(--color-fondo); /* color de fondo de toda la página */
+      line-height: 1.6;
+      /*
+        line-height: altura de cada línea de texto.
+        1.6 significa 1.6 veces el tamaño de la letra. Mejora la lectura.
+      */
+    }
+
+    img {
+      max-width: 100%;  /* la imagen nunca se sale de su contenedor (clave para responsive) */
+      display: block;   /* quita el pequeño hueco blanco que deja debajo una imagen "inline" */
+    }
+
+    a {
+      color: var(--color-principal);
+      text-decoration: none;  /* quita el subrayado por defecto de los enlaces */
+    }
+
+    /* Clase reutilizable: centra el contenido y limita su ancho */
+    .contenedor {
+      width: 100%;                   /* ocupa todo el ancho disponible... */
+      max-width: var(--ancho-max);   /* ...pero nunca más de 1100px */
+      margin: 0 auto;
+      /*
+        margin: 0 auto -> 0 arriba/abajo, "auto" a izquierda/derecha.
+        Con auto en los lados, el bloque se centra horizontalmente.
+        (Funciona solo si el elemento tiene un ancho definido o max-width.)
+      */
+      padding: 0 1.5rem;
+      /*
+        padding: 0 arriba/abajo, 1.5rem a izquierda/derecha.
+        rem = unidad relativa al tamaño de letra base (1rem = 16px normalmente).
+        Evita que el contenido toque los bordes de la pantalla en móvil.
+      */
+    }
+    /*
+      Equivalente Bootstrap:  <div class="container">
+      Equivalente Tailwind:   <div class="max-w-6xl mx-auto px-6">
+    */
+
+    /* ==========================================================
+       3. NAVBAR (barra de navegación) - usa FLEXBOX
+       ========================================================== */
+
+    .navbar {
+      background-color: var(--color-oscuro);
+      position: sticky;
+      /*
+        position: sticky -> el elemento se comporta normal hasta que haces
+        scroll; al llegar al top se "pega" y se queda fijo arriba.
+      */
+      top: 0;         /* distancia desde arriba a la que se pega (con sticky/fixed) */
+      z-index: 100;
+      /*
+        z-index: orden de apilamiento. Mayor número = más "al frente".
+        Evita que otros elementos tapen la navbar al hacer scroll.
+      */
+    }
+
+    .navbar .contenedor {
+      display: flex;
+      /*
+        display: flex activa FLEXBOX: pone los hijos directos en una fila
+        (por defecto) y nos da herramientas para alinearlos.
+      */
+      justify-content: space-between;
+      /*
+        justify-content: alinea en el eje PRINCIPAL (horizontal en una fila).
+        space-between: primer hijo a la izquierda, último a la derecha,
+        el espacio sobrante se reparte entre ellos.
+      */
+      align-items: center;
+      /*
+        align-items: alinea en el eje CRUZADO (vertical en una fila).
+        center: centra verticalmente los hijos.
+      */
+      padding-top: 1rem;      /* espacio interior arriba */
+      padding-bottom: 1rem;   /* espacio interior abajo */
+    }
+
+    .logo {
+      color: #ffffff;
+      font-size: 1.25rem;     /* tamaño de letra (20px aprox.) */
+      font-weight: 700;       /* grosor: 400 normal, 700 negrita */
+    }
+
+    .menu {
+      display: flex;          /* los enlaces del menú se ponen en fila */
+      gap: 1.5rem;
+      /*
+        gap: espacio ENTRE los hijos de un flex o grid.
+        Es más limpio que usar márgenes en cada elemento.
+      */
+      list-style: none;       /* quita las viñetas (puntos) de la lista <ul> */
+    }
+
+    .menu a {
+      color: #cbd5e1;         /* gris claro sobre fondo oscuro */
+      font-weight: 500;
+      transition: color 0.2s; /*
+        transition: anima el cambio de una propiedad.
+        Aquí: el color cambia suavemente en 0.2 segundos al hacer hover.
+      */
+    }
+
+    .menu a:hover {
+      color: #ffffff;
+      /*
+        :hover es una PSEUDOCLASE: se activa cuando el mouse está encima.
+        Otras pseudoclases importantes: :focus (elemento seleccionado con teclado
+        o clic), :active (mientras se hace clic), :first-child, :nth-child(n).
+      */
+    }
+    /*
+      Equivalente Bootstrap:
+        <nav class="navbar navbar-dark bg-dark"> ... <ul class="navbar-nav"> ...
+      Equivalente Tailwind:
+        <nav class="bg-slate-900 sticky top-0"> <div class="flex justify-between items-center">
+    */
+
+    /* ==========================================================
+       4. HERO (sección principal de bienvenida)
+       ========================================================== */
+
+    .hero {
+      text-align: center;         /* centra el texto horizontalmente */
+      padding: 5rem 0;
+      /*
+        padding con 2 valores: primero ARRIBA y ABAJO (5rem), luego
+        IZQUIERDA y DERECHA (0).
+        Atajo de 4 valores: padding: arriba derecha abajo izquierda
+        (sentido de las agujas del reloj).
+      */
+    }
+
+    .hero h1 {
+      font-size: 2.75rem;         /* título grande */
+      line-height: 1.15;          /* los títulos grandes llevan interlineado más cerrado */
+      color: var(--color-oscuro);
+      margin-bottom: 1rem;        /* espacio EXTERIOR debajo del título */
+    }
+
+    .hero p {
+      max-width: 55ch;
+      /*
+        ch = unidad basada en el ancho del carácter "0".
+        55ch limita la línea a unos 55 caracteres, que es lo más cómodo de leer.
+      */
+      margin: 0 auto 2rem;        /* centrado horizontal (auto) y 2rem de espacio abajo */
+      font-size: 1.125rem;
+    }
+
+    /* Botón (reutilizable con la clase .boton) */
+    .boton {
+      display: inline-block;
+      /*
+        inline-block: se coloca en línea con otros elementos (como texto)
+        PERO permite darle ancho, alto, padding y margen (cosa que el
+        "inline" puro no permite bien).
+      */
+      background-color: var(--color-principal);
+      color: #ffffff;
+      padding: 0.75rem 1.75rem;   /* 0.75rem arriba/abajo, 1.75rem a los lados */
+      border-radius: 8px;         /* esquinas redondeadas */
+      border: none;               /* quita el borde por defecto de <button> */
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;            /* el cursor se vuelve manita al pasar por encima */
+      transition: background-color 0.2s, transform 0.2s;
+      /* transition con varias propiedades se separan con coma */
+    }
+
+    .boton:hover {
+      background-color: #1d4ed8;  /* azul un poco más oscuro */
+      transform: translateY(-2px);
+      /*
+        transform: mueve/rota/escala el elemento SIN alterar el resto del layout.
+        translateY(-2px): sube el botón 2 píxeles (efecto de "levantarse").
+      */
+    }
+
+    .boton:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 3px;
+      /*
+        :focus-visible muestra un contorno cuando navegas con teclado (Tab).
+        Es importante para accesibilidad: nunca quites el outline sin
+        poner uno alternativo.
+      */
+    }
+    /*
+      Equivalente Bootstrap:  <button class="btn btn-primary">
+      Equivalente Tailwind:   <button class="bg-blue-600 hover:bg-blue-700 text-white px-7 py-3 rounded-lg">
+    */
+
+    /* ==========================================================
+       5. TARJETAS - usa CSS GRID
+       ========================================================== */
+
+    .seccion {
+      padding: 4rem 0;            /* espacio vertical entre secciones */
+    }
+
+    .seccion h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--color-oscuro);
+      margin-bottom: 2.5rem;
+    }
+
+    .tarjetas {
+      display: grid;
+      /*
+        display: grid activa CSS GRID: un sistema de filas Y columnas a la vez.
+        (Flexbox trabaja en una sola dirección; Grid en dos.)
+      */
+      grid-template-columns: repeat(3, 1fr);
+      /*
+        grid-template-columns: define las columnas.
+        repeat(3, 1fr) = 3 columnas de igual tamaño.
+        fr = "fracción" del espacio disponible. 1fr 1fr 1fr es lo mismo.
+      */
+      gap: 1.5rem;                /* espacio entre filas y columnas */
+    }
+
+    .tarjeta {
+      background-color: var(--color-tarjeta);
+      border: 1px solid var(--color-borde);
+      /*
+        border: grosor + estilo (solid, dashed, dotted) + color.
+        Es un atajo de border-width, border-style y border-color.
+      */
+      border-radius: var(--radio);
+      padding: 1.75rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .tarjeta:hover {
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+      /*
+        box-shadow: sombra. Valores en orden:
+        desplazamiento-X  desplazamiento-Y  desenfoque  color
+        rgba(r, g, b, opacidad): color con transparencia (0 a 1).
+      */
+      transform: translateY(-4px);
+    }
+
+    .tarjeta h3 {
+      color: var(--color-oscuro);
+      margin-bottom: 0.5rem;
+    }
+
+    .icono {
+      font-size: 2rem;            /* los emojis se escalan como si fueran texto */
+      margin-bottom: 0.75rem;
+    }
+    /*
+      Equivalente Bootstrap:
+        <div class="row"> <div class="col-md-4"> <div class="card"> <div class="card-body">
+      Equivalente Tailwind:
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6"> <div class="bg-white p-7 rounded-xl border">
+    */
+
+    /* ==========================================================
+       6. TABLA
+       ========================================================== */
+
+    .tabla-contenedor {
+      overflow-x: auto;
+      /*
+        overflow-x: auto -> si la tabla es más ancha que la pantalla,
+        aparece un scroll horizontal SOLO en este contenedor
+        (en lugar de romper toda la página en móvil).
+      */
+      background-color: var(--color-tarjeta);
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radio);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      /*
+        border-collapse: collapse -> junta los bordes de las celdas en uno solo.
+        Sin esto, cada celda tiene su borde separado y se ve doble.
+      */
+    }
+
+    th, td {
+      /* selector con coma: aplica los mismos estilos a <th> Y a <td> */
+      padding: 0.9rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-borde);
+    }
+
+    th {
+      background-color: var(--color-oscuro);
+      color: #ffffff;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f1f5f9;
+      /*
+        :nth-child(even) selecciona las filas pares (2, 4, 6...).
+        Crea el efecto "cebra" que facilita leer tablas.
+        También existe :nth-child(odd) para las impares.
+      */
+    }
+
+    tbody tr:hover {
+      background-color: #dbeafe;  /* resalta la fila bajo el mouse */
+    }
+    /*
+      Equivalente Bootstrap:  <table class="table table-striped table-hover">
+      Equivalente Tailwind:   hay que estilizar a mano: <tr class="even:bg-slate-100 hover:bg-blue-100">
+    */
+
+    /* ==========================================================
+       7. FORMULARIO
+       ========================================================== */
+
+    .formulario {
+      max-width: 520px;
+      margin: 0 auto;             /* centra el formulario */
+      background-color: var(--color-tarjeta);
+      padding: 2rem;
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radio);
+      display: flex;
+      flex-direction: column;
+      /*
+        flex-direction: column -> cambia el eje principal: ahora los hijos
+        se apilan VERTICALMENTE (uno debajo del otro) en vez de en fila.
+      */
+      gap: 1.25rem;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;     /* etiqueta arriba, input debajo */
+      gap: 0.4rem;
+    }
+
+    .campo label {
+      font-weight: 600;
+      color: var(--color-oscuro);
+    }
+
+    .campo input,
+    .campo select,
+    .campo textarea {
+      /* varios selectores separados por coma comparten los mismos estilos */
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: inherit;
+      /*
+        inherit: hereda el valor del elemento padre.
+        Los inputs NO heredan la fuente por defecto, así que se fuerza aquí.
+      */
+      font-size: 1rem;
+    }
+
+    .campo input:focus,
+    .campo select:focus,
+    .campo textarea:focus {
+      outline: none;              /* quita el contorno por defecto... */
+      border-color: var(--color-principal);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+      /* ...y lo reemplaza por un halo azul (así sigue siendo accesible) */
+    }
+
+    .campo textarea {
+      resize: vertical;           /* el usuario solo puede cambiar la altura, no el ancho */
+      min-height: 110px;          /* altura mínima del área de texto */
+    }
+    /*
+      Equivalente Bootstrap:
+        <div class="mb-3"> <label class="form-label"> <input class="form-control">
+      Equivalente Tailwind:
+        <input class="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+    */
+
+    /* ==========================================================
+       8. FOOTER (pie de página)
+       ========================================================== */
+
+    .footer {
+      background-color: var(--color-oscuro);
+      color: #94a3b8;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 2rem;
+    }
+
+    /* ==========================================================
+       9. RESPONSIVE: MEDIA QUERIES
+       ========================================================== */
+
+    /*
+      @media permite aplicar estilos SOLO cuando se cumple una condición.
+      max-width: 900px -> "si la pantalla mide 900px o MENOS" (tablet).
+      Estrategia usada aquí: "desktop first" (primero escritorio, luego
+      ajustamos para pantallas más pequeñas).
+    */
+    @media (max-width: 900px) {
+      .tarjetas {
+        grid-template-columns: repeat(2, 1fr);  /* de 3 columnas pasa a 2 */
+      }
+    }
+
+    /* Pantallas de 600px o menos (celular) */
+    @media (max-width: 600px) {
+      .tarjetas {
+        grid-template-columns: 1fr;             /* una sola columna */
+      }
+
+      .hero h1 {
+        font-size: 2rem;                        /* título más pequeño en móvil */
+      }
+
+      .navbar .contenedor {
+        flex-direction: column;                 /* logo arriba, menú abajo */
+        gap: 0.75rem;
+      }
+
+      .menu {
+        gap: 1rem;
+        flex-wrap: wrap;
+        /*
+          flex-wrap: wrap -> si los elementos no caben en una fila,
+          pasan a la siguiente línea en vez de aplastarse.
+        */
+        justify-content: center;
+      }
+    }
+    /*
+      Bootstrap y Tailwind hacen esto con prefijos de clase:
+        Bootstrap:  col-12 col-md-6 col-lg-4   (1 col en móvil, 2 en tablet, 3 en escritorio)
+        Tailwind:   grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+      Ambos son "mobile first": las clases sin prefijo aplican a móvil y los
+      prefijos (md, lg) añaden cambios en pantallas MÁS GRANDES.
+    */
+
+    /* Respeta a quien desactivó las animaciones en su sistema (accesibilidad) */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        /*
+          !important: obliga a que esta regla gane sobre cualquier otra.
+          Úsalo con mucha moderación; aquí es un caso justificado.
+        */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!--
+    <body>: todo lo que se VE en la página va aquí dentro:
+    textos, imágenes, botones, tablas, formularios, etc.
+  -->
+
+  <!-- ============================================================
+       NAVBAR
+       ============================================================ -->
+  <header class="navbar">
+    <!--
+      <header>: etiqueta SEMÁNTICA. Indica "encabezado de la página o sección".
+      Semántica = etiquetas que describen el SIGNIFICADO del contenido (no solo
+      su aspecto). Ayudan al SEO y a la accesibilidad.
+      class="navbar": le asigna una clase para poder estilizarlo desde el CSS
+      con el selector .navbar (el punto indica "clase").
+    -->
+
+    <div class="contenedor">
+      <!--
+        <div>: caja genérica SIN significado propio. Se usa para agrupar
+        elementos y aplicarles estilos. Es de tipo "bloque" (ocupa todo el ancho).
+      -->
+
+      <a href="#inicio" class="logo">MiProyecto</a>
+      <!--
+        <a>: enlace (anchor).
+        href="#inicio": a dónde lleva. El "#" indica un ancla interna: salta
+        al elemento de esta misma página con id="inicio".
+        Para enlazar otra página: href="otra.html". Para web externa: href="https://...".
+      -->
+
+      <nav aria-label="Navegación principal">
+        <!--
+          <nav>: etiqueta semántica para un bloque de enlaces de navegación.
+          aria-label: texto que leen los lectores de pantalla para describir
+          qué es este bloque (accesibilidad).
+        -->
+
+        <ul class="menu">
+          <!--
+            <ul>: lista NO ordenada (con viñetas). Para lista numerada: <ol>.
+            Los menús se hacen como listas porque son, semánticamente,
+            una lista de enlaces.
+          -->
+          <li><a href="#servicios">Servicios</a></li>
+          <!-- <li>: cada ítem (list item) de la lista. Siempre dentro de <ul> u <ol>. -->
+          <li><a href="#precios">Precios</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       CONTENIDO PRINCIPAL
+       ============================================================ -->
+  <main>
+    <!--
+      <main>: el contenido PRINCIPAL y único de la página.
+      Solo debe haber un <main> por página (excluye navbar y footer).
+    -->
+
+    <!-- ---------- HERO ---------- -->
+    <section class="hero" id="inicio">
+      <!--
+        <section>: sección temática del documento. Normalmente lleva un título.
+        id="inicio": identificador ÚNICO. Sirve para enlaces ancla (#inicio),
+        para CSS (#inicio) y para JavaScript. No puede repetirse en la página.
+        Diferencia clave: class se puede repetir muchas veces; id solo una vez.
+      -->
+      <div class="contenedor">
+        <h1>Construye páginas web que se ven bien en cualquier pantalla</h1>
+        <!--
+          <h1>: título principal. Solo uno por página (SEO).
+          Jerarquía: h1 > h2 > h3 > h4 > h5 > h6. No saltes niveles.
+        -->
+
+        <p>Este prototipo reúne las piezas más comunes de HTML y CSS: navegación, tarjetas, tabla, formulario y diseño responsive.</p>
+        <!-- <p>: párrafo de texto. Los navegadores le añaden margen arriba y abajo. -->
+
+        <a href="#contacto" class="boton">Escríbenos</a>
+        <!--
+          Aquí un <a> con class="boton" se ve como botón pero funciona como enlace.
+          Regla práctica: si LLEVA a otra parte -> <a>. Si EJECUTA una acción
+          (enviar formulario, abrir modal) -> <button>.
+        -->
+      </div>
+    </section>
+
+    <!-- ---------- TARJETAS ---------- -->
+    <section class="seccion" id="servicios">
+      <div class="contenedor">
+        <h2>Nuestros servicios</h2>
+
+        <div class="tarjetas">
+          <!-- Este div es el contenedor GRID: sus hijos directos se acomodan en columnas. -->
+
+          <article class="tarjeta">
+            <!--
+              <article>: contenido independiente que tendría sentido por sí solo
+              (una tarjeta, una noticia, un post). Otra opción válida: <div>.
+            -->
+            <div class="icono" aria-hidden="true">🎨</div>
+            <!--
+              aria-hidden="true": le dice a los lectores de pantalla que ignoren
+              este elemento porque es solo decorativo.
+            -->
+            <h3>Diseño web</h3>
+            <p>Interfaces limpias, claras y adaptadas a móvil, tablet y escritorio.</p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono" aria-hidden="true">⚙️</div>
+            <h3>Desarrollo</h3>
+            <p>Código ordenado y semántico que se mantiene fácil con el tiempo.</p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono" aria-hidden="true">🚀</div>
+            <h3>Optimización</h3>
+            <p>Páginas rápidas y bien posicionadas en los buscadores.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- TABLA ---------- -->
+    <section class="seccion" id="precios">
+      <div class="contenedor">
+        <h2>Planes y precios</h2>
+
+        <div class="tabla-contenedor">
+          <table>
+            <!-- <table>: tabla de datos. Solo se usa para datos tabulares, NO para maquetar. -->
+
+            <caption style="position:absolute; left:-9999px;">Comparación de planes</caption>
+            <!--
+              <caption>: título de la tabla (útil para accesibilidad).
+              style="...": CSS "en línea" aplicado directamente a este elemento.
+              Aquí lo ocultamos visualmente pero los lectores de pantalla lo leen.
+              (Evita abusar del style en línea: es mejor usar clases.)
+            -->
+
+            <thead>
+              <!-- <thead>: grupo de filas del ENCABEZADO de la tabla. -->
+              <tr>
+                <!-- <tr>: fila (table row). -->
+                <th scope="col">Plan</th>
+                <!--
+                  <th>: celda de encabezado (table header), en negrita y centrada por defecto.
+                  scope="col": indica que este encabezado describe una COLUMNA.
+                -->
+                <th scope="col">Páginas</th>
+                <th scope="col">Soporte</th>
+                <th scope="col">Precio</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- <tbody>: grupo de filas del CUERPO (los datos). -->
+              <tr>
+                <td>Básico</td>
+                <!-- <td>: celda de datos normal (table data). -->
+                <td>1</td>
+                <td>Correo</td>
+                <td>$50</td>
+              </tr>
+              <tr>
+                <td>Profesional</td>
+                <td>5</td>
+                <td>Chat</td>
+                <td>$120</td>
+              </tr>
+              <tr>
+                <td>Empresa</td>
+                <td>Ilimitadas</td>
+                <td>Teléfono 24/7</td>
+                <td>$300</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- FORMULARIO ---------- -->
+    <section class="seccion" id="contacto">
+      <div class="contenedor">
+        <h2>Contáctanos</h2>
+
+        <form class="formulario" action="#" method="post">
+          <!--
+            <form>: agrupa los campos que se enviarán juntos.
+            action="#": a qué URL se envían los datos (aquí "#" = ninguna, es de prueba).
+            method="post": cómo se envían. "post" los manda ocultos en la petición
+            (para datos de formularios). "get" los pone visibles en la URL (para búsquedas).
+          -->
+
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <!--
+              <label>: etiqueta de un campo.
+              for="nombre": se vincula con el input cuyo id sea "nombre".
+              Beneficio: al hacer clic en el texto, se selecciona el input,
+              y los lectores de pantalla saben qué campo describe.
+            -->
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+            <!--
+              <input>: campo de entrada (no lleva etiqueta de cierre).
+              type="text": texto normal. Otros tipos: email, password, number,
+                           date, checkbox, radio, file, tel, url.
+              id="nombre": identificador único (lo enlaza el label).
+              name="nombre": nombre con el que viajan los datos al enviarse el formulario.
+              placeholder: texto gris de ejemplo que desaparece al escribir.
+              required: el navegador no deja enviar el formulario si está vacío.
+            -->
+          </div>
+
+          <div class="campo">
+            <label for="correo">Correo electrónico</label>
+            <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+            <!-- type="email": el navegador valida automáticamente que tenga formato de correo (@). -->
+          </div>
+
+          <div class="campo">
+            <label for="asunto">Asunto</label>
+            <select id="asunto" name="asunto">
+              <!-- <select>: lista desplegable. Cada opción va en un <option>. -->
+              <option value="info">Quiero información</option>
+              <!-- value: lo que se envía al servidor. El texto interior es lo que ve el usuario. -->
+              <option value="presupuesto">Pedir presupuesto</option>
+              <option value="soporte">Soporte técnico</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos qué necesitas"></textarea>
+            <!--
+              <textarea>: campo de texto de varias líneas (sí lleva etiqueta de cierre).
+              rows="4": altura inicial en líneas de texto.
+            -->
+          </div>
+
+          <button type="submit" class="boton">Enviar mensaje</button>
+          <!--
+            <button>: botón.
+            type="submit": al hacer clic, envía el formulario.
+            Otros tipos: type="button" (no hace nada por sí solo, se usa con JavaScript)
+            y type="reset" (vacía el formulario).
+          -->
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <!-- <footer>: pie de página. Suele llevar derechos de autor, enlaces legales y contacto. -->
+    <div class="contenedor">
+      <p>&copy; 2026 MiProyecto. Todos los derechos reservados.</p>
+      <!--
+        &copy; es una ENTIDAD HTML: un código que representa un símbolo especial (©).
+        Otras comunes: &lt; (<)  &gt; (>)  &amp; (&)  &nbsp; (espacio que no se corta).
+      -->
+    </div>
+  </footer>
+
+  <!--
+    Aquí, justo antes de </body>, iría el JavaScript (por ejemplo el de Bootstrap).
+    Se pone al final para que la página cargue primero y no se vea bloqueada.
+    Ejemplo: <script src="app.js"></script>
+  -->
+</body>
+</html>
+<!-- Cierre de </html>: fin del documento. -->

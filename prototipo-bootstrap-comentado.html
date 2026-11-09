@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<!--
+  <!DOCTYPE html>: le dice al navegador que este documento es HTML5.
+  Va siempre en la primera línea. Bootstrap lo necesita para funcionar bien.
+-->
+
+<html lang="es">
+<!--
+  <html>: etiqueta raíz, todo el documento va dentro.
+  lang="es": idioma de la página (accesibilidad, buscadores, traductores).
+-->
+
+<head>
+  <!-- <head>: configuración de la página. Nada de lo que hay aquí se ve en pantalla. -->
+
+  <meta charset="UTF-8">
+  <!-- charset="UTF-8": permite ver bien tildes, ñ, ¿ ¡ y emojis. -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+    viewport: OBLIGATORIO con Bootstrap para que sea responsive en móvil.
+    width=device-width: el ancho de la página = ancho real de la pantalla.
+    initial-scale=1: sin zoom al cargar.
+  -->
+
+  <title>Prototipo Bootstrap | HTML sin CSS propio</title>
+  <!-- <title>: texto que aparece en la pestaña del navegador. -->
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!--
+    <link>: enlaza un archivo externo. Aquí, el CSS de Bootstrap desde un CDN
+    (una URL que sirve el archivo desde internet, sin descargar nada).
+    rel="stylesheet": indica que el archivo es una hoja de estilos.
+    bootstrap.min.css: versión "minificada" (más liviana). Es lo único que
+    necesitamos para dar estilo: NO escribiremos ni una línea de CSS propio.
+    Por eso en esta página NO hay etiqueta <style> ni atributos style="...".
+  -->
+</head>
+
+<!--
+  ============================================================
+  CHULETA RÁPIDA DE CLASES BOOTSTRAP USADAS EN ESTA PÁGINA
+  ============================================================
+  ESPACIADO (formato: propiedad + lado + tamaño del 0 al 5)
+    m = margin (espacio EXTERIOR)    p = padding (espacio INTERIOR)
+    t = arriba   b = abajo   s = inicio (izquierda)   e = final (derecha)
+    x = izquierda y derecha          y = arriba y abajo
+    Ejemplos: mb-3 (margen abajo), py-5 (padding arriba y abajo), mx-auto (centrar)
+
+  FLEXBOX
+    d-flex ............ activa flexbox
+    justify-content-* . alinea en horizontal (start, center, between, end)
+    align-items-* ..... alinea en vertical (start, center, end)
+    gap-3 ............. espacio entre hijos
+    flex-column ....... apila en vertical
+
+  TEXTO
+    text-center / text-start / text-end ... alineación
+    fw-bold ........... negrita         fs-1 al fs-6 ... tamaño de letra
+    text-white / text-muted / text-primary ... colores de texto
+
+  FONDOS Y BORDES
+    bg-dark / bg-light / bg-primary ... color de fondo
+    border / rounded / shadow ......... borde, esquinas redondeadas, sombra
+
+  GRID (cuadrícula de 12 columnas)
+    container ......... contenedor centrado con ancho máximo
+    row ............... fila (agrupa columnas)
+    col-* ............. columna. Ejemplo: col-12 col-md-6 col-lg-4
+    Breakpoints: sm (576px) md (768px) lg (992px) xl (1200px)
+    Las clases son "mobile first": lo que no lleva prefijo vale para móvil
+    y el prefijo (md, lg) aplica desde ese tamaño hacia arriba.
+-->
+
+<body class="bg-light">
+  <!--
+    <body>: todo lo que se VE en la página va aquí dentro.
+    class="bg-light": fondo gris muy claro (clase de Bootstrap).
+    "class" puede llevar varias clases separadas por espacio.
+  -->
+
+  <!-- ============================================================
+       NAVBAR (barra de navegación)
+       ============================================================ -->
+  <header>
+    <!-- <header>: etiqueta semántica de "encabezado" de la página. -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <!--
+        <nav>: etiqueta semántica para bloques de navegación.
+        navbar ............. activa los estilos base de la barra.
+        navbar-expand-lg ... el menú se muestra completo desde pantallas
+                             "lg" (992px). En pantallas menores se colapsa
+                             en un botón de hamburguesa.
+        navbar-dark ........ texto claro, para usarse sobre fondos oscuros.
+        bg-dark ............ fondo oscuro.
+        sticky-top ......... la barra se queda pegada arriba al hacer scroll.
+      -->
+
+      <div class="container">
+        <!--
+          container: centra el contenido y le da un ancho máximo según la pantalla.
+          Alternativa: container-fluid (ocupa el 100% del ancho siempre).
+        -->
+
+        <a class="navbar-brand fw-bold" href="#inicio">MiProyecto</a>
+        <!--
+          navbar-brand: estilo para el logo o nombre del sitio.
+          fw-bold: font-weight bold (negrita).
+          href="#inicio": ancla interna, salta al elemento con id="inicio".
+        -->
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal" aria-expanded="false"
+                aria-label="Mostrar u ocultar el menú">
+          <!--
+            Botón de hamburguesa. Solo se ve en pantallas pequeñas.
+            navbar-toggler ......... estilos del botón.
+            data-bs-toggle="collapse" . le dice a Bootstrap (JS) que este botón
+                                        muestra/oculta un elemento.
+            data-bs-target="#menuPrincipal" . qué elemento muestra/oculta
+                                        (el que tenga id="menuPrincipal").
+            aria-controls / aria-expanded / aria-label: accesibilidad,
+            para lectores de pantalla.
+          -->
+          <span class="navbar-toggler-icon"></span>
+          <!-- navbar-toggler-icon: dibuja las tres rayitas de la hamburguesa. -->
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+          <!--
+            collapse ........... el elemento puede ocultarse (en móvil).
+            navbar-collapse .... agrupa los enlaces para que se colapsen
+                                 y se expandan según el tamaño de pantalla.
+            id="menuPrincipal" . el botón de arriba apunta a este id.
+          -->
+
+          <ul class="navbar-nav ms-auto">
+            <!--
+              <ul>: lista sin orden (con viñetas, pero navbar-nav las quita).
+              navbar-nav ... estilos de los enlaces de la barra.
+              ms-auto ...... margin-start: auto. Empuja el menú hacia la derecha.
+                             (ms = margin start, "auto" = todo el espacio sobrante)
+            -->
+            <li class="nav-item">
+              <!-- <li>: ítem de la lista. nav-item: ítem de la barra. -->
+              <a class="nav-link active" aria-current="page" href="#inicio">Inicio</a>
+              <!--
+                nav-link ......... estilo de enlace de navegación.
+                active ........... marca la página actual (se ve resaltada).
+                aria-current ..... indica a lectores de pantalla la página actual.
+              -->
+            </li>
+            <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+            <li class="nav-item"><a class="nav-link" href="#precios">Precios</a></li>
+            <li class="nav-item"><a class="nav-link" href="#preguntas">Preguntas</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!--
+      <main>: contenido PRINCIPAL de la página. Solo uno por página.
+      (Excluye navbar y footer.)
+    -->
+
+    <!-- ============================================================
+         HERO (bienvenida)
+         ============================================================ -->
+    <section id="inicio" class="py-5 text-center">
+      <!--
+        <section>: sección temática del documento.
+        id="inicio": identificador ÚNICO (para el enlace ancla #inicio).
+        py-5: padding arriba y abajo de tamaño 5 (el más grande, 3rem).
+        text-center: centra el texto.
+      -->
+      <div class="container py-4">
+        <h1 class="display-4 fw-bold mb-3">Páginas web que se ven bien en cualquier pantalla</h1>
+        <!--
+          <h1>: título principal. Solo uno por página.
+          display-4: título extra grande (display-1 es el más grande, display-6 el menor).
+          fw-bold: negrita.   mb-3: margin-bottom 3 (espacio abajo).
+        -->
+
+        <p class="lead mx-auto mb-4 col-lg-7">
+          Este prototipo usa únicamente Bootstrap: navbar, tarjetas, tabla,
+          formulario, acordeón y modal, sin una sola línea de CSS propio.
+        </p>
+        <!--
+          <p>: párrafo.
+          lead: texto un poco más grande y ligero, para introducciones.
+          mx-auto: margin izquierda y derecha en "auto" = centra el bloque.
+          col-lg-7: en pantallas lg o más, ocupa 7 de 12 columnas de ancho
+                    (así la línea de texto no queda demasiado larga).
+        -->
+
+        <a href="#contacto" class="btn btn-primary btn-lg me-2">Escríbenos</a>
+        <!--
+          btn ............ estilos base de botón (también funciona en <a>).
+          btn-primary .... color azul principal.
+                           Otros: btn-secondary, btn-success, btn-danger,
+                           btn-warning, btn-info, btn-light, btn-dark.
+          btn-lg ......... botón grande (btn-sm = pequeño).
+          me-2 ........... margin-end: espacio a la derecha.
+        -->
+
+        <button type="button" class="btn btn-outline-secondary btn-lg"
+                data-bs-toggle="modal" data-bs-target="#modalInfo">
+          Ver más info
+        </button>
+        <!--
+          btn-outline-secondary: botón solo con borde (sin relleno).
+          data-bs-toggle="modal": al hacer clic, abre una ventana modal.
+          data-bs-target="#modalInfo": qué modal abre (el de id="modalInfo",
+          que está más abajo en el código).
+          Regla: si LLEVA a otra parte usa <a>; si EJECUTA una acción usa <button>.
+        -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TARJETAS (cards en grid)
+         ============================================================ -->
+    <section id="servicios" class="py-5 bg-white">
+      <!-- bg-white: fondo blanco, para separar visualmente esta sección. -->
+      <div class="container">
+        <h2 class="text-center fw-bold mb-5">Nuestros servicios</h2>
+        <!-- <h2>: título de sección. mb-5: mucho espacio debajo. -->
+
+        <div class="row g-4">
+          <!--
+            row ... fila del sistema de grid. Sus hijos directos son columnas.
+            g-4 ... gutter (separación) de tamaño 4 entre columnas y filas.
+                    g-* = gap en ambos sentidos. (gx-* solo horizontal, gy-* solo vertical)
+          -->
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <!--
+              Columna responsive:
+              col-12 .... en móvil ocupa 12/12 (1 tarjeta por fila).
+              col-md-6 .. desde 768px ocupa 6/12 (2 tarjetas por fila).
+              col-lg-4 .. desde 992px ocupa 4/12 (3 tarjetas por fila).
+              La suma de columnas en una fila es 12.
+            -->
+            <div class="card h-100 shadow-sm border-0">
+              <!--
+                card ......... contenedor de tarjeta (borde, fondo, esquinas).
+                h-100 ........ height 100%: todas las tarjetas igualan su altura.
+                shadow-sm .... sombra suave.   border-0 ... quita el borde.
+              -->
+              <div class="card-body text-center">
+                <!-- card-body: zona interior de la tarjeta con padding. -->
+                <div class="fs-1 mb-2" aria-hidden="true">🎨</div>
+                <!--
+                  fs-1: font-size más grande (fs-1 a fs-6). El emoji se agranda como texto.
+                  aria-hidden="true": los lectores de pantalla lo ignoran (es decorativo).
+                -->
+                <h3 class="card-title h5">Diseño web</h3>
+                <!--
+                  card-title: título de la tarjeta.
+                  h5: aplica el TAMAÑO de un h5 pero mantiene la etiqueta h3
+                  (así respetamos la jerarquía semántica h1 > h2 > h3).
+                -->
+                <p class="card-text text-muted">Interfaces limpias y adaptadas a móvil, tablet y escritorio.</p>
+                <!-- card-text: texto de la tarjeta.  text-muted: gris atenuado. -->
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+              <div class="card-body text-center">
+                <div class="fs-1 mb-2" aria-hidden="true">⚙️</div>
+                <h3 class="card-title h5">Desarrollo</h3>
+                <p class="card-text text-muted">Código ordenado y semántico, fácil de mantener con el tiempo.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+              <div class="card-body text-center">
+                <div class="fs-1 mb-2" aria-hidden="true">🚀</div>
+                <h3 class="card-title h5">Optimización</h3>
+                <p class="card-text text-muted">Páginas rápidas y bien posicionadas en los buscadores.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TABLA
+         ============================================================ -->
+    <section id="precios" class="py-5">
+      <div class="container">
+        <h2 class="text-center fw-bold mb-5">Planes y precios</h2>
+
+        <div class="table-responsive">
+          <!--
+            table-responsive: si la tabla es más ancha que la pantalla,
+            aparece scroll horizontal SOLO en este contenedor
+            (en vez de romper la página en móvil).
+          -->
+          <table class="table table-striped table-hover align-middle bg-white">
+            <!--
+              <table>: tabla de datos (no se usa para maquetar).
+              table ........... estilos base de Bootstrap.
+              table-striped ... filas alternas con fondo distinto (efecto cebra).
+              table-hover ..... resalta la fila al pasar el mouse.
+              align-middle .... centra el contenido de las celdas en vertical.
+              Otras: table-bordered (bordes), table-dark (tabla oscura),
+              table-sm (más compacta).
+            -->
+
+            <caption class="visually-hidden">Comparación de planes</caption>
+            <!--
+              <caption>: título de la tabla, útil para accesibilidad.
+              visually-hidden: lo oculta a la vista pero los lectores de
+              pantalla lo siguen leyendo.
+            -->
+
+            <thead class="table-dark">
+              <!--
+                <thead>: grupo de filas del ENCABEZADO.
+                table-dark: fondo oscuro con texto claro.
+              -->
+              <tr>
+                <!-- <tr>: fila (table row). -->
+                <th scope="col">Plan</th>
+                <!--
+                  <th>: celda de encabezado (negrita, centrada por defecto).
+                  scope="col": este encabezado describe una columna.
+                -->
+                <th scope="col">Páginas</th>
+                <th scope="col">Soporte</th>
+                <th scope="col" class="text-end">Precio</th>
+                <!-- text-end: alinea el texto a la derecha (bueno para cifras). -->
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- <tbody>: cuerpo de la tabla, donde van los datos. -->
+              <tr>
+                <td>Básico</td>
+                <!-- <td>: celda de datos normal (table data). -->
+                <td>1</td>
+                <td>Correo</td>
+                <td class="text-end">$50</td>
+              </tr>
+              <tr>
+                <td>Profesional <span class="badge text-bg-primary">Popular</span></td>
+                <!--
+                  <span>: contenedor en línea sin significado propio.
+                  badge ............ etiqueta pequeña tipo "píldora".
+                  text-bg-primary .. fondo azul con texto de contraste automático.
+                -->
+                <td>5</td>
+                <td>Chat</td>
+                <td class="text-end">$120</td>
+              </tr>
+              <tr>
+                <td>Empresa</td>
+                <td>Ilimitadas</td>
+                <td>Teléfono 24/7</td>
+                <td class="text-end">$300</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACORDEÓN (preguntas frecuentes)
+         ============================================================ -->
+    <section id="preguntas" class="py-5 bg-white">
+      <div class="container">
+        <h2 class="text-center fw-bold mb-5">Preguntas frecuentes</h2>
+
+        <div class="accordion mx-auto col-lg-8" id="acordeonFAQ">
+          <!--
+            accordion ... componente de paneles desplegables.
+            mx-auto col-lg-8 ... centrado y con 8/12 del ancho en pantallas grandes.
+            id="acordeonFAQ" ... los paneles se enlazan con este id para que
+                                 al abrir uno se cierren los demás.
+          -->
+
+          <div class="accordion-item">
+            <!-- accordion-item: cada panel (título + contenido). -->
+            <h3 class="accordion-header">
+              <!-- accordion-header: contiene el botón con el título del panel. -->
+              <button class="accordion-button" type="button"
+                      data-bs-toggle="collapse" data-bs-target="#respuesta1"
+                      aria-expanded="true" aria-controls="respuesta1">
+                <!--
+                  accordion-button: estilo del botón del título.
+                  data-bs-toggle="collapse": abre/cierra un contenido.
+                  data-bs-target="#respuesta1": qué contenido controla.
+                  aria-expanded="true": este panel empieza abierto.
+                -->
+                ¿Cuánto tarda un proyecto?
+              </button>
+            </h3>
+            <div id="respuesta1" class="accordion-collapse collapse show" data-bs-parent="#acordeonFAQ">
+              <!--
+                accordion-collapse collapse ... zona que se despliega.
+                show ........................... la deja abierta al cargar.
+                data-bs-parent="#acordeonFAQ" .. al abrir un panel, cierra los
+                                                 otros del mismo acordeón.
+              -->
+              <div class="accordion-body">
+                <!-- accordion-body: contenido con padding interior. -->
+                Depende del plan, pero un sitio básico se entrega en una semana.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button"
+                      data-bs-toggle="collapse" data-bs-target="#respuesta2"
+                      aria-expanded="false" aria-controls="respuesta2">
+                <!-- collapsed: indica que este panel empieza cerrado (flecha hacia abajo). -->
+                ¿Puedo cambiar de plan después?
+              </button>
+            </h3>
+            <div id="respuesta2" class="accordion-collapse collapse" data-bs-parent="#acordeonFAQ">
+              <div class="accordion-body">
+                Sí, puedes subir o bajar de plan cuando quieras.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FORMULARIO
+         ============================================================ -->
+    <section id="contacto" class="py-5">
+      <div class="container">
+        <h2 class="text-center fw-bold mb-5">Contáctanos</h2>
+
+        <form class="mx-auto col-lg-6 bg-white p-4 border rounded shadow-sm" action="#" method="post">
+          <!--
+            <form>: agrupa los campos que se envían juntos.
+            action="#": a dónde se envían los datos (aquí ninguna, es de prueba).
+            method="post": los datos viajan ocultos en la petición
+                           ("get" los pondría visibles en la URL).
+            mx-auto col-lg-6 ... centrado, ocupa la mitad del ancho en pantallas grandes.
+            bg-white p-4 ........ fondo blanco y padding interior grande.
+            border rounded ...... borde y esquinas redondeadas.
+          -->
+
+          <div class="mb-3">
+            <!-- mb-3: separa cada grupo de campo del siguiente. -->
+            <label for="nombre" class="form-label">Nombre</label>
+            <!--
+              <label>: etiqueta del campo.
+              for="nombre": se vincula al input con id="nombre"
+              (al hacer clic en el texto, se selecciona el campo).
+              form-label: estilo de Bootstrap para etiquetas.
+            -->
+            <input type="text" class="form-control" id="nombre" name="nombre"
+                   placeholder="Tu nombre" required>
+            <!--
+              <input>: campo de entrada (no lleva etiqueta de cierre).
+              type="text": texto. Otros: email, password, number, date, tel, url, file...
+              form-control: estilo Bootstrap para inputs (ancho 100%, borde, foco azul).
+              id: identificador único.   name: nombre con el que viajan los datos.
+              placeholder: texto gris de ejemplo.
+              required: no deja enviar si está vacío.
+            -->
+          </div>
+
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="correo" name="correo"
+                   placeholder="tucorreo@ejemplo.com" required>
+            <!-- type="email": el navegador valida que tenga formato de correo. -->
+            <div class="form-text">Nunca compartiremos tu correo.</div>
+            <!-- form-text: texto de ayuda pequeño y gris debajo del campo. -->
+          </div>
+
+          <div class="mb-3">
+            <label for="asunto" class="form-label">Asunto</label>
+            <select class="form-select" id="asunto" name="asunto">
+              <!--
+                <select>: lista desplegable.
+                form-select: estilo Bootstrap para select (no uses form-control aquí).
+              -->
+              <option value="info" selected>Quiero información</option>
+              <!--
+                <option>: cada opción.
+                value: lo que se envía.   selected: opción marcada por defecto.
+              -->
+              <option value="presupuesto">Pedir presupuesto</option>
+              <option value="soporte">Soporte técnico</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="mensaje" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="mensaje" name="mensaje" rows="4"
+                      placeholder="Cuéntanos qué necesitas"></textarea>
+            <!--
+              <textarea>: texto de varias líneas (sí lleva etiqueta de cierre).
+              rows="4": altura inicial en líneas.
+            -->
+          </div>
+
+          <div class="form-check mb-4">
+            <!-- form-check: contenedor de un checkbox o radio con su etiqueta. -->
+            <input class="form-check-input" type="checkbox" id="acepto" name="acepto" required>
+            <!-- type="checkbox": casilla de verificación. form-check-input: su estilo. -->
+            <label class="form-check-label" for="acepto">Acepto la política de privacidad</label>
+            <!-- form-check-label: estilo de la etiqueta del checkbox. -->
+          </div>
+
+          <div class="d-grid">
+            <!--
+              d-grid: activa display grid. Con un solo hijo (el botón), hace
+              que el botón ocupe todo el ancho disponible.
+            -->
+            <button type="submit" class="btn btn-primary btn-lg">Enviar mensaje</button>
+            <!--
+              type="submit": envía el formulario al hacer clic.
+              Otros tipos: type="button" (no hace nada solo) y type="reset" (vacía el formulario).
+            -->
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="bg-dark text-white-50 text-center py-4">
+    <!--
+      <footer>: pie de página (derechos, enlaces legales, contacto).
+      text-white-50: texto blanco con 50% de opacidad (gris claro sobre fondo oscuro).
+    -->
+    <div class="container">
+      <p class="mb-0">&copy; 2026 MiProyecto. Todos los derechos reservados.</p>
+      <!--
+        mb-0: quita el margen inferior del párrafo (los <p> traen uno por defecto).
+        &copy; es una ENTIDAD HTML que muestra el símbolo ©.
+        Otras: &lt; (<)  &gt; (>)  &amp; (&)  &nbsp; (espacio fijo).
+      -->
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       MODAL (ventana emergente)
+       Se escribe en cualquier parte del body; no se ve hasta que
+       un botón con data-bs-toggle="modal" lo abre.
+       ============================================================ -->
+  <div class="modal fade" id="modalInfo" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+    <!--
+      modal ............... contenedor de la ventana emergente (oculto por defecto).
+      fade ................ animación de aparición suave.
+      id="modalInfo" ...... el botón de arriba apunta a este id.
+      tabindex="-1" ....... permite cerrarlo con la tecla Escape.
+      aria-labelledby ..... indica qué elemento es su título (accesibilidad).
+    -->
+    <div class="modal-dialog modal-dialog-centered">
+      <!-- modal-dialog: caja del modal. modal-dialog-centered: centrada en vertical. -->
+      <div class="modal-content">
+        <!-- modal-content: el cuadro blanco con borde y fondo. -->
+        <div class="modal-header">
+          <!-- modal-header: parte superior (título y botón de cerrar). -->
+          <h2 class="modal-title fs-5" id="tituloModal">Más información</h2>
+          <!--
+            modal-title: estilo del título.
+            fs-5: tamaño de letra 5, aunque la etiqueta es h2 (semántica correcta).
+          -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          <!--
+            btn-close: botón con una X.
+            data-bs-dismiss="modal": al hacer clic, cierra el modal.
+          -->
+        </div>
+        <div class="modal-body">
+          <!-- modal-body: contenido principal del modal. -->
+          <p class="mb-0">Esto es un modal de Bootstrap: una ventana emergente que se abre sin escribir JavaScript, solo con atributos data-bs.</p>
+        </div>
+        <div class="modal-footer">
+          <!-- modal-footer: zona inferior para los botones de acción. -->
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <a href="#contacto" class="btn btn-primary" data-bs-dismiss="modal">Ir al contacto</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--
+    JavaScript de Bootstrap. Es lo que hace funcionar el menú hamburguesa,
+    el acordeón y el modal (todo lo que usa atributos data-bs-*).
+    bundle = incluye también Popper (para tooltips y dropdowns).
+    Va AL FINAL del body para que la página cargue primero.
+    Si lo olvidas, los componentes interactivos NO funcionan,
+    aunque el CSS se vea perfecto.
+  -->
+</body>
+</html>
+<!-- Cierre de </html>: fin del documento. -->
